@@ -1,14 +1,24 @@
 import React, { Component } from "react";
-import { Card, CardText, CardBody, CardTitle } from "reactstrap";
+import { Card, CardText, CardImg, CardBody, CardTitle } from "reactstrap";
 import dateFormat from "dateformat";
-import { STAFFS } from "./data/staffs";
+import Pagination from "./PaginationComponent.js";
+import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
 class StaffList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedStaff: null,
+      currentPage: 1,
     };
   }
+
+  numberOfElementsAfterPagination = (page) => {
+    this.setState({
+      currentPage: page.value,
+    });
+  };
 
   onStaffSelected(Staff) {
     this.setState({ selectedStaff: Staff });
@@ -33,50 +43,32 @@ class StaffList extends Component {
           </CardBody>
         </Card>
       );
+    } else {
+      return <div></div>;
     }
   }
 
   render() {
-    let staff = this.props.Staffs.slice(0,6).map((Staff) => {
+    const indexCurrentPage = this.state.currentPage - 1;
+    const staff = this.props.Staffs.slice(
+      indexCurrentPage * 6,
+      indexCurrentPage * 6 + 6
+    ).map((Staff) => {
+      const uniqueid = uuidv4();
       return (
-        <div key={Staff.id}>
-          <Card onClick={() => this.onStaffSelected(Staff)}>
-            <CardTitle>{Staff.name}</CardTitle>
-          </Card>
-        </div>
-      );
-    });
-
-    const staffLen = STAFFS.length;
-    let totalPage = (staffLen - (staffLen % 6)) / 6;
-    if (staffLen % 6 !== 0) {
-      totalPage++;
-    }
-    // console.log(totalPage);
-    let pageArr = [];
-    for (let i = 0; i < totalPage; i++) {
-      let page = {
-        id: i,
-        value: i + 1,
-      };
-      pageArr.push(page);
-    }
-    // console.log(pageArr);
-
-    const pages = pageArr.map((page) => {
-      return (
-        <div key={page.id}>
-          <div onClick={() => this.props.handle(page)}>
-            <CardTitle>{page.value}</CardTitle>
-          </div>
-        </div>
+        <Card key={uniqueid} onClick={() => this.onStaffSelected(Staff)}>
+          <Link to={`${Staff.id}`}>
+            <CardImg src={Staff.image} alt={Staff.image} />
+            <CardTitle style={{ textAlign: "center" }}>{Staff.name}</CardTitle>
+          </Link>
+        </Card>
       );
     });
 
     return (
       <div className="container-fluid">
         <div className="wrapper">{staff}</div>
-        <div className="wrapper page">{pages}</div>
+        <Pagination Pagination={this.numberOfElementsAfterPagination} />
         <div style={{ paddingTop: "50px" }}>
           Bấm vào tên Nhân Viên để xem thông tin cụ thể.
         </div>
