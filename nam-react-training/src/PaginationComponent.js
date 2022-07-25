@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { CardTitle } from "reactstrap";
-import { STAFFS } from "./data/staffs";
 
 class Pagination extends Component {
   render() {
-    const staffLen = STAFFS.length;
+    const staffLen = this.props.Staffs.length;
     let totalPage = (staffLen - (staffLen % 6)) / 6;
     if (staffLen % 6 !== 0) {
       totalPage++;
@@ -22,7 +20,7 @@ class Pagination extends Component {
       return (
         <div key={page.id}>
           <div onClick={() => this.props.Pagination(page)}>
-            <CardTitle>{page.value}</CardTitle>
+            <button>{page.value}</button>
           </div>
         </div>
       );

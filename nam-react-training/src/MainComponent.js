@@ -12,13 +12,45 @@ class Main extends Component {
     this.state = {
       Staffs: STAFFS,
       Departments: DEPARTMENTS,
+      currentPage: 1,
     };
+    this.addStaff = this.addStaff.bind(this);
   }
 
-  staffsAfterPagination = (page) => {
+  addStaff = (staffAdd) => {
+    const idF = this.state.Staffs.map((staff) => staff.id);
+    const id = Math.max(...idF) + 1;
+    const newStaff = { id, ...staffAdd };
     this.setState({
-      Staffs: STAFFS.slice(page.id * 6, page.id * 6 + 6),
+      Staffs: [...this.state.Staffs, newStaff],
     });
+    console.log(newStaff);
+    console.log(this.state.Staffs);
+  };
+  
+
+  staffsAfterSearching = () => {
+    const searchName = document.getElementById("SearchName").value;
+    this.setState({
+      Staffs: STAFFS.filter((each) => {
+        if (each.name.match(eval("/" + searchName + "/gi")) != null) {
+          return each;
+        }
+        return null;
+      }),
+    });
+  };
+
+  staffsAfterPagination = (page) => {
+    if (page != null) {
+      this.setState({
+        currentPage: page.value,
+      });
+    } else {
+      this.setState({
+        currentPage: 1,
+      });
+    }
   };
 
   render() {
@@ -41,7 +73,10 @@ class Main extends Component {
             element={
               <StaffList
                 Staffs={this.state.Staffs}
-                pagination={this.staffsAfterPagination}
+                Search={this.staffsAfterSearching}
+                currentPage={this.state.currentPage}
+                Pagination={this.staffsAfterPagination}
+                onAdd={this.addStaff}
               />
             }
           />
@@ -52,7 +87,14 @@ class Main extends Component {
           />
           <Route
             path="BangLuong"
-            element={<Salary Staffs={this.state.Staffs} />}
+            element={
+              <Salary
+                Staffs={this.state.Staffs}
+                Search={this.staffsAfterSearching}
+                currentPage={this.state.currentPage}
+                Pagination={this.staffsAfterPagination}
+              />
+            }
           />
           <Route path="*" element={<Navigate to="/Nhanvien" />} />
         </Routes>

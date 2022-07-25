@@ -243,7 +243,7 @@ export const STAFFS =
         },
         {
             id: 19,
-            name: "Nguyễn Haha F",
+            name: "Nguyễn Văn S",
             doB: "2003-01-01T08:59:00.000Z",
             salaryScale: 1,
             startDate: "2019-04-30T08:59:00.000Z",
